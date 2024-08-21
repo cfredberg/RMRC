@@ -1,0 +1,5 @@
+this should stream the cameras' video feeds to an ip address:
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! videoconvert ! x264enc tune=zerolatency ! rtph264pay ! udpsink host=127.0.0.5 port=5000
+
+now the streams need to be read, and this might be able to be done with a tool called WebRTC
