@@ -1,5 +1,7 @@
-this should stream the cameras' video feeds to an ip address:
+List camera available resolutions (use "-d camera_address" for just that camera's info)
+v4l2-ctl --list-formats-ext
 
-gst-launch-1.0 v4l2src device=/dev/video2 ! videoconvert ! x264enc tune=zerolatency ! rtph264pay ! udpsink host=127.0.0.5 port=5000
+Start stream:
+gst-launch-1.0 v4l2src device=/dev/video0 ! "image/jpeg,width=752,height=416,framerate=30/1" ! rtpjpegpay ! udpsink host=192.168.1.157 port=5000
 
 now the streams need to be read, and this might be able to be done with a tool called WebRTC
