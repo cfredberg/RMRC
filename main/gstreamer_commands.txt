@@ -1,3 +1,5 @@
+This system does use jpeg for video format.  don't know how fast that is compared to other formats, so just something to keep in mind
+
 List camera available resolutions (use "-d camera_address" for just that camera's info)
 v4l2-ctl --list-formats-ext
 
@@ -5,3 +7,6 @@ Start stream:
 gst-launch-1.0 v4l2src device=/dev/video0 ! "image/jpeg,width=752,height=416,framerate=30/1" ! rtpjpegpay ! udpsink host=192.168.1.157 port=5000
 
 now the streams need to be read, and this might be able to be done with a tool called WebRTC
+
+read streams using gstreamer:
+gst-launch-1.0 udpsrc port=5000 ! application/x-rtp,encoding-name=JPEG,payload=26 ! rtpjpegdepay ! jpegparse ! jpegdec ! autovideosink
