@@ -2,6 +2,7 @@ import cv2
 import socket
 import pickle
 import time
+import struct
 
 HOST = ""
 PORT = 8002
@@ -17,8 +18,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print("sleeping")
         time.sleep(1)
         print("slept")
-        cap = cv2.VideoCapture(gst_str, cv2.CAP_GSTREAMER)
-        while cap.isOpened():
+        # cap = cv2.VideoCapture(gst_str, cv2.CAP_GSTREAMER)
+        cap = cv2.VideoCapture(0)
+        if not cap.isOpened():
+            exit("camera can't be opened")
+        while True:
             print("capture open")
             ret, frame = cap.read()
             if ret:
@@ -28,3 +32,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.sendall(frame)
             else:
                 print("no return")
+        cap.release()
