@@ -1,11 +1,10 @@
 import cv2
 import socket
 import pickle
-import time
 import struct
 
 HOST = ""
-PORT = 8002
+PORT = 8000
 
 gst_str = "gst-launch-1.0 videotestsrc ! videoconvert ! appsink"
 
@@ -15,21 +14,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     conn, addr = s.accept()
     with conn:
         print("Connection established")
-        print("sleeping")
-        time.sleep(1)
-        print("slept")
-        # cap = cv2.VideoCapture(gst_str, cv2.CAP_GSTREAMER)
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():
             exit("camera can't be opened")
         while True:
-            print("capture open")
             ret, frame = cap.read()
             if ret:
-                print("have return")
-                print(f"sending {frame}")
-                frame = pickle.dumps(frame)
-                s.sendall(frame)
+                data = pickle.dumps(frame)
+                message_size = struct.pack("L", len(data))  # Prefix each message with a fixed-size header
+                conn.sendall(message_size + data)
             else:
-                print("no return")
+                break
         cap.release()
